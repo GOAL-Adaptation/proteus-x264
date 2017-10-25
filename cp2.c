@@ -48,10 +48,14 @@ int i_frame = 0;
 int i_frame_size;
 x264_nal_t *nal;
 int i_nal;
+FILE *fin;
+FILE *fout;
 
-int x264_cp2_setup(int wdth, int hght) {
+int x264_cp2_setup(char *inputPath, char *outputPath, int wdth, int hght) {
   width = wdth;
   height = hght;
+  fin = fopen(inputPath, "rb");
+  fout = fopen(outputPath, "wb");
 
   if( x264_param_default_preset( &param, "medium", NULL ) < 0 )
       return -1;
@@ -82,11 +86,11 @@ int x264_cp2_encode_frame() {
   int luma_size = width * height;
   int chroma_size = luma_size / 4;
 
-  if( fread( pic.img.plane[0], 1, luma_size, stdin ) != luma_size )
+  if( fread( pic.img.plane[0], 1, luma_size, fin ) != luma_size )
       return 1;
-  if( fread( pic.img.plane[1], 1, chroma_size, stdin ) != chroma_size )
+  if( fread( pic.img.plane[1], 1, chroma_size, fin ) != chroma_size )
       return 1;
-  if( fread( pic.img.plane[2], 1, chroma_size, stdin ) != chroma_size )
+  if( fread( pic.img.plane[2], 1, chroma_size, fin ) != chroma_size )
       return 1;
 
   pic.i_pts = i_frame;
@@ -95,13 +99,14 @@ int x264_cp2_encode_frame() {
       return -1;
   else if( i_frame_size )
   {
-      if( !fwrite( nal->p_payload, i_frame_size, 1, stdout ) )
+      if( !fwrite( nal->p_payload, i_frame_size, 1, fout ) )
           return -2;
   }
 
   i_frame++;
 
   return 0;
+
   // 0   ::= continue the loop
   // > 0 ::= terminate the loop
   // < 0 ::= error
@@ -115,11 +120,13 @@ int x264_cp2_teardown() {
           return -1;
       else if( i_frame_size )
       {
-          if( !fwrite( nal->p_payload, i_frame_size, 1, stdout ) )
+          if( !fwrite( nal->p_payload, i_frame_size, 1, fout ) )
               return -2;
       }
   }
 
+  fclose(fin);
+  fclose(fout);
   x264_encoder_close( h );
   x264_picture_clean( &pic );
 

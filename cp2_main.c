@@ -50,6 +50,8 @@ do\
 int main( int argc, char **argv )
 {
   int w, h;
+  char *inPath = argv[1];
+  char *outPath = argv[2];
 
 #ifdef _WIN32
     _setmode( _fileno( stdin ),  _O_BINARY );
@@ -57,10 +59,10 @@ int main( int argc, char **argv )
     _setmode( _fileno( stderr ), _O_BINARY );
 #endif
 
-    FAIL_IF_ERROR( !(argc > 1), "Example usage: cp2 352x288 <input.yuv >output.h264\n" );
-    FAIL_IF_ERROR( 2 != sscanf( argv[1], "%dx%d", &w, &h ), "resolution not specified or incorrect\n" );
+    FAIL_IF_ERROR( !(argc > 1), "Example usage: cp2 input.yuv output.h264 352x288\n" );
+    FAIL_IF_ERROR( 2 != sscanf( argv[3], "%dx%d", &w, &h ), "resolution not specified or incorrect\n" );
 
-    if (x264_cp2_setup(w, h) < 0) {
+    if (x264_cp2_setup(inPath, outPath, w, h) < 0) {
       goto fail;
     }
 

@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-int x264_cp2_setup();
+int x264_cp2_setup(char *inputPath, char *outputPath, int wdth, int hght);
 int x264_cp2_encode_frame();
 int x264_cp2_teardown();
 int x264_cp2_get_quality();
