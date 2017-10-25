@@ -20,7 +20,8 @@ SRCS = common/mc.c common/predict.c common/pixel.c common/macroblock.c \
        common/mvpred.c common/bitstream.c \
        encoder/analyse.c encoder/me.c encoder/ratecontrol.c \
        encoder/set.c encoder/macroblock.c encoder/cabac.c \
-       encoder/cavlc.c encoder/encoder.c encoder/lookahead.c
+       encoder/cavlc.c encoder/encoder.c encoder/lookahead.c \
+       cp2.c
 
 SRCCLI = x264.c input/input.c input/timecode.c input/raw.c input/y4m.c \
          output/raw.c output/matroska.c output/matroska_ebml.c \
@@ -37,6 +38,8 @@ OBJCLI =
 OBJCHK = tools/checkasm.o
 
 OBJEXAMPLE = example.o
+
+OBJCP2 = cp2_main.o
 
 CONFIG := $(shell cat config.h)
 
@@ -192,10 +195,11 @@ $(SONAME): $(GENERATED) .depend $(OBJS) $(OBJASM) $(OBJSO)
 	$(LD)$@ $(OBJS) $(OBJASM) $(OBJSO) $(SOFLAGS) $(LDFLAGS)
 
 ifneq ($(EXE),)
-.PHONY: x264 checkasm example
+.PHONY: x264 checkasm example cp2
 x264: x264$(EXE)
 checkasm: checkasm$(EXE)
 example: example$(EXE)
+cp2: cp2$(EXE)
 endif
 
 x264$(EXE): $(GENERATED) .depend $(OBJCLI) $(CLI_LIBX264)
@@ -207,7 +211,10 @@ checkasm$(EXE): $(GENERATED) .depend $(OBJCHK) $(LIBX264)
 example$(EXE): $(GENERATED) .depend $(OBJEXAMPLE) $(LIBX264)
 	$(LD)$@ $(OBJEXAMPLE) $(LIBX264) $(LDFLAGS)
 
-$(OBJS) $(OBJASM) $(OBJSO) $(OBJCLI) $(OBJCHK) $(OBJEXAMPLE): .depend
+cp2$(EXE): $(GENERATED) .depend $(OBJCP2) $(LIBX264)
+	$(LD)$@ $(OBJCP2) $(LIBX264) $(LDFLAGS)
+
+$(OBJS) $(OBJASM) $(OBJSO) $(OBJCLI) $(OBJCHK) $(OBJCP2): .depend
 
 %.o: %.asm common/x86/x86inc.asm common/x86/x86util.asm
 	$(AS) $(ASFLAGS) -o $@ $<
@@ -275,6 +282,7 @@ clean:
 	rm -f $(OBJS) $(OBJASM) $(OBJCLI) $(OBJSO) $(SONAME) *.a *.lib *.exp *.pdb x264 x264.exe .depend TAGS
 	rm -f checkasm checkasm.exe $(OBJCHK) $(GENERATED) x264_lookahead.clbin
 	rm -f example example.exe $(OBJEXAMPLE)
+	rm -f cp2 cp2.exe $(OBJCP2)
 	rm -f $(SRC2:%.c=%.gcda) $(SRC2:%.c=%.gcno) *.dyn pgopti.dpi pgopti.dpi.lock *.pgd *.pgc
 
 distclean: clean
