@@ -51,7 +51,7 @@ int i_nal;
 FILE *fin;
 FILE *fout;
 
-int x264_cp2_setup(char *inputPath, char *outputPath, int wdth, int hght) {
+int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int hght) {
   width = wdth;
   height = hght;
   fin = fopen(inputPath, "rb");
