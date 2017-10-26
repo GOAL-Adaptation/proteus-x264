@@ -154,13 +154,5 @@ int x264_cp2_teardown() {
 }
 
 double x264_cp2_get_quality() {
-  double psnp_1 = h->stat.f_psnr_average[0];
-  double psnp_2 = h->stat.f_psnr_average[1];
-  double psnp_3 = h->stat.f_psnr_average[2];
-
-  // don't think this makes any sense, but just get a value for now
-  double mse = psnp_1 + psnp_2 + psnp_3 / (PIXEL_MAX*PIXEL_MAX * 3 * h->param.i_width * h->param.i_height / 2);
-  double avg_psnr = log10( mse ) * 1000.0;
-
-  return avg_psnr;
+  return h->stat.f_psnr_average[h->sh.i_type] * 1000.0;
 }
