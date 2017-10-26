@@ -62,7 +62,13 @@ int main( int argc, char **argv )
     FAIL_IF_ERROR( !(argc > 1), "Example usage: cp2 input.yuv output.h264 352x288\n" );
     FAIL_IF_ERROR( 2 != sscanf( argv[3], "%dx%d", &w, &h ), "resolution not specified or incorrect\n" );
 
-    if (x264_cp2_setup(inPath, outPath, w, h) < 0) {
+    cp2_knobs init_knobs = {
+      .me = 12,
+      .subme = 7,
+      .reframes = 1,
+      .qp = 10
+    };
+    if (x264_cp2_setup(inPath, outPath, w, h, init_knobs) < 0) {
       goto fail;
     }
 

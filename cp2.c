@@ -35,9 +35,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <x264.h>
+#include <common/common.h>
 #include <cp2.h>
 
 // global variables
+
+static cp2_knobs knobs;
 
 int width, height;
 x264_param_t param;
@@ -51,11 +54,26 @@ int i_nal;
 FILE *fin;
 FILE *fout;
 
-int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int hght) {
-  width = wdth;
-  height = hght;
+void cp2_update_knob_settings(cp2_knobs knobs_settings) {
+  knobs = knobs_settings;
+  cp2_update_x264_param();
+}
+
+void cp2_update_x264_param() {
+  int i;
+  for (i = 0; i < h->param.i_threads; i++) {
+    h->thread[i]->param.analyse.i_me_range = knobs.me;
+    h->thread[i]->param.analyse.i_subpel_refine = knobs.subme;
+    h->thread[i]->param.i_frame_reference = knobs.reframes;
+    h->thread[i]->param.rc.i_qp_constant = knobs.qp;
+  }
+}
+
+int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs initialKnobSettings) {
   fin = fopen(inputPath, "rb");
   fout = fopen(outputPath, "wb");
+  width = wdth;
+  height = hght;
 
   if( x264_param_default_preset( &param, "medium", NULL ) < 0 )
       return -1;
@@ -78,6 +96,8 @@ int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int 
   h = x264_encoder_open( &param );
   if( !h )
     return -4;
+
+  cp2_update_knob_settings(initialKnobSettings);
 
   return 0;
 }
@@ -133,6 +153,6 @@ int x264_cp2_teardown() {
   return 0;
 }
 
-int x264_cp2_get_quality() {
+double x264_cp2_get_quality() {
   return 0;
 }

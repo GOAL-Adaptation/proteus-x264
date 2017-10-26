@@ -39,10 +39,25 @@
 extern "C" {
 #endif
 
-int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int hght);
+// cp2 knobs and measures
+
+typedef struct cp2_knobs {
+  int me;
+  int subme;
+  int reframes;
+  int qp;
+} cp2_knobs;
+
+void cp2_update_knob_settings(cp2_knobs initialKnobSettings);
+void cp2_update_x264_param();
+
+double x264_cp2_get_quality();
+
+// x264 encode functions
+
+int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs initialKnobSettings);
 int x264_cp2_encode_frame();
 int x264_cp2_teardown();
-int x264_cp2_get_quality();
 
 #ifdef __cplusplus
 }
