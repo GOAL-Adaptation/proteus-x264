@@ -305,6 +305,14 @@ install-lib-static: lib-static install-lib-dev
 	$(INSTALL) -m 644 $(LIBX264) $(DESTDIR)$(libdir)
 	$(if $(RANLIB), $(RANLIB) $(DESTDIR)$(libdir)/$(LIBX264))
 
+install-cp2: cp2
+	$(INSTALL) -d $(DESTDIR)$(includedir)
+	$(INSTALL) -d $(DESTDIR)$(libdir)
+	$(INSTALL) -m 644 $(SRCPATH)/x264.h $(DESTDIR)$(includedir)
+	$(INSTALL) -m 644 x264_config.h $(DESTDIR)$(includedir)
+	$(INSTALL) -m 644 $(SRCPATH)/cp2.h $(DESTDIR)$(includedir)
+	$(INSTALL) -m 644 $(LIBX264) $(DESTDIR)$(libdir)
+
 install-lib-shared: lib-shared install-lib-dev
 ifneq ($(IMPLIBNAME),)
 	$(INSTALL) -d $(DESTDIR)$(bindir)
@@ -317,6 +325,7 @@ endif
 
 uninstall:
 	rm -f $(DESTDIR)$(includedir)/x264.h $(DESTDIR)$(includedir)/x264_config.h $(DESTDIR)$(libdir)/libx264.a
+	rm -f $(DESTDIR)$(includedir)/cp2.h
 	rm -f $(DESTDIR)$(bindir)/x264$(EXE) $(DESTDIR)$(libdir)/pkgconfig/x264.pc
 ifneq ($(IMPLIBNAME),)
 	rm -f $(DESTDIR)$(bindir)/$(SONAME) $(DESTDIR)$(libdir)/$(IMPLIBNAME)
