@@ -79,6 +79,7 @@ int main( int argc, char **argv )
       } else if (enc_ret < 0) {
         goto fail;
       }
+      x264_cp2_get_quality();
     }
 
     return x264_cp2_teardown();

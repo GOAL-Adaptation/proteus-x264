@@ -60,8 +60,7 @@ void cp2_update_knob_settings(cp2_knobs knobs_settings) {
 }
 
 void cp2_update_x264_param() {
-  int i;
-  for (i = 0; i < h->param.i_threads; i++) {
+  for (int i = 0; i < h->param.i_threads; i++) {
     h->thread[i]->param.analyse.i_me_range = knobs.me;
     h->thread[i]->param.analyse.i_subpel_refine = knobs.subme;
     h->thread[i]->param.i_frame_reference = knobs.reframes;
@@ -85,6 +84,7 @@ int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int 
   param.b_vfr_input = 0;
   param.b_repeat_headers = 1;
   param.b_annexb = 1;
+  param.analyse.b_psnr = 1;
 
   /* Apply profile restrictions. */
   if( x264_param_apply_profile( &param, "high" ) < 0 )
@@ -154,5 +154,13 @@ int x264_cp2_teardown() {
 }
 
 double x264_cp2_get_quality() {
-  return 0;
+  double psnp_1 = h->stat.f_psnr_average[0];
+  double psnp_2 = h->stat.f_psnr_average[1];
+  double psnp_3 = h->stat.f_psnr_average[2];
+
+  // don't think this makes any sense, but just get a value for now
+  double mse = psnp_1 + psnp_2 + psnp_3 / (PIXEL_MAX*PIXEL_MAX * 3 * h->param.i_width * h->param.i_height / 2);
+  double avg_psnr = log10( mse ) * 1000.0;
+
+  return avg_psnr;
 }
