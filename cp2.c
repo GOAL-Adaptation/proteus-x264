@@ -45,12 +45,8 @@ static cp2_knobs knobs;
 int width, height;
 x264_param_t param;
 x264_picture_t pic;
-x264_picture_t pic_out;
 x264_t *h;
 int i_frame = 0;
-int i_frame_size;
-x264_nal_t *nal;
-int i_nal;
 FILE *fin;
 FILE *fout;
 
@@ -101,6 +97,11 @@ int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int 
 }
 
 int x264_cp2_encode_frame() {
+  x264_nal_t *nal;
+  int i_nal;
+  int i_frame_size;
+  x264_picture_t pic_out;
+
   int luma_size = width * height;
   int chroma_size = luma_size / 4;
 
@@ -131,6 +132,11 @@ int x264_cp2_encode_frame() {
 }
 
 int x264_cp2_teardown() {
+  x264_nal_t *nal;
+  int i_nal;
+  int i_frame_size;
+  x264_picture_t pic_out;
+
   while( x264_encoder_delayed_frames( h ) )
   {
       i_frame_size = x264_encoder_encode( h, &nal, &i_nal, NULL, &pic_out );
