@@ -75,7 +75,7 @@ int main( int argc, char **argv )
     }
 
     while (1) {
-      if (processed_frames == 60) {
+      if (processed_frames == 100) {
         cp2_knobs updated_knobs = {
           .me = 12,
           .subme = 7,

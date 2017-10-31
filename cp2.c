@@ -44,6 +44,7 @@ const char *input_path;
 const char *output_path;
 int width, height;
 static cp2_knobs knobs;
+int knob_qp;
 
 x264_param_t param;
 x264_picture_t pic;
@@ -58,6 +59,15 @@ void cp2_update_knob_settings(cp2_knobs knobs_settings) {
 }
 
 void cp2_update_x264_param() {
+  fprintf(stderr, "[cp2] updating x264 params\n");
+  if (knob_qp != knobs.qp) {
+    fprintf(stderr, "[cp2] needs to update qp to %d\n", knobs.qp);
+    knob_qp = knobs.qp;
+    x264_cp2_setup();
+    return;
+  }
+
+  fprintf(stderr, "[cp2] updating other knobs, such as me, subme, and reframes.\n");
   for (int i = 0; i < h->param.i_threads; i++) {
     h->thread[i]->param.analyse.i_me_range = knobs.me;
     h->thread[i]->param.analyse.i_subpel_refine = knobs.subme;
@@ -71,11 +81,13 @@ void x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int 
   width = wdth;
   height = hght;
   knobs = knobSettings;
+  knob_qp = knobSettings.qp;
+
+  fin = fopen(input_path, "rb");
+  fout = fopen(output_path, "wb");
 }
 
 int x264_cp2_setup() {
-  fin = fopen(input_path, "rb");
-  fout = fopen(output_path, "wb");
 
   if( x264_param_default_preset( &param, "medium", NULL ) < 0 )
       return -1;
