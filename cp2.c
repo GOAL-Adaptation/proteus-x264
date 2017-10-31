@@ -64,7 +64,6 @@ void cp2_update_x264_param() {
     h->thread[i]->param.analyse.i_me_range = knobs.me;
     h->thread[i]->param.analyse.i_subpel_refine = knobs.subme;
     h->thread[i]->param.i_frame_reference = knobs.reframes;
-    h->thread[i]->param.rc.i_qp_constant = knobs.qp;
   }
 }
 
@@ -78,13 +77,12 @@ int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int 
       return -1;
 
   /* Configure non-default params */
-  param.i_csp = X264_CSP_I420;
   param.i_width  = width;
   param.i_height = height;
-  param.b_vfr_input = 0;
-  param.b_repeat_headers = 1;
-  param.b_annexb = 1;
   param.analyse.b_psnr = 1;
+  param.rc.i_qp_constant = initialKnobSettings.qp;
+  param.rc.i_qp_min = initialKnobSettings.qp;
+  param.rc.i_qp_max = initialKnobSettings.qp;
 
   /* Apply profile restrictions. */
   if( x264_param_apply_profile( &param, "high" ) < 0 )
