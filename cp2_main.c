@@ -52,6 +52,7 @@ int main( int argc, char **argv )
   int w, h;
   char *inPath = argv[1];
   char *outPath = argv[2];
+  int processed_frames = 0;
 
 #ifdef _WIN32
     _setmode( _fileno( stdin ),  _O_BINARY );
@@ -66,19 +67,29 @@ int main( int argc, char **argv )
       .me = 12,
       .subme = 7,
       .reframes = 1,
-      .qp = 10
+      .qp = 0
     };
     if (x264_cp2_setup(inPath, outPath, w, h, init_knobs) < 0) {
       goto fail;
     }
 
     while (1) {
+      if (processed_frames == 60) {
+        cp2_knobs updated_knobs = {
+          .me = 12,
+          .subme = 7,
+          .reframes = 1,
+          .qp = 40
+        };
+        cp2_update_knob_settings(updated_knobs);
+      }
       int enc_ret = x264_cp2_encode_frame();
       if (enc_ret > 0) {
         break;
       } else if (enc_ret < 0) {
         goto fail;
       }
+      processed_frames++;
       x264_cp2_get_quality();
     }
 
