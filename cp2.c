@@ -40,9 +40,11 @@
 
 // global variables
 
+const char *input_path;
+const char *output_path;
+int width, height;
 static cp2_knobs knobs;
 
-int width, height;
 x264_param_t param;
 x264_picture_t pic;
 x264_t *h;
@@ -63,11 +65,17 @@ void cp2_update_x264_param() {
   }
 }
 
-int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs initialKnobSettings) {
-  fin = fopen(inputPath, "rb");
-  fout = fopen(outputPath, "wb");
+void x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs knobSettings) {
+  input_path = inputPath;
+  output_path = outputPath;
   width = wdth;
   height = hght;
+  knobs = knobSettings;
+}
+
+int x264_cp2_setup() {
+  fin = fopen(input_path, "rb");
+  fout = fopen(output_path, "wb");
 
   if( x264_param_default_preset( &param, "medium", NULL ) < 0 )
       return -1;
@@ -76,9 +84,9 @@ int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int 
   param.i_width  = width;
   param.i_height = height;
   param.analyse.b_psnr = 1;
-  param.rc.i_qp_constant = initialKnobSettings.qp;
-  param.rc.i_qp_min = initialKnobSettings.qp;
-  param.rc.i_qp_max = initialKnobSettings.qp;
+  param.rc.i_qp_constant = knobs.qp;
+  param.rc.i_qp_min = knobs.qp;
+  param.rc.i_qp_max = knobs.qp;
 
   /* Apply profile restrictions. */
   if( x264_param_apply_profile( &param, "high" ) < 0 )
@@ -91,7 +99,7 @@ int x264_cp2_setup(const char *inputPath, const char *outputPath, int wdth, int 
   if( !h )
     return -4;
 
-  cp2_update_knob_settings(initialKnobSettings);
+  cp2_update_x264_param();
 
   return 0;
 }

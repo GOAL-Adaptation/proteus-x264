@@ -69,7 +69,8 @@ int main( int argc, char **argv )
       .reframes = 1,
       .qp = 0
     };
-    if (x264_cp2_setup(inPath, outPath, w, h, init_knobs) < 0) {
+    x264_cp2_init(inPath, outPath, w, h, init_knobs);
+    if (x264_cp2_setup() < 0) {
       goto fail;
     }
 
@@ -96,5 +97,6 @@ int main( int argc, char **argv )
     return x264_cp2_teardown();
 
 fail:
+    fprintf(stderr, "failed from cp2_main.");
     return -1;
 }
