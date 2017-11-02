@@ -174,6 +174,20 @@ int x264_cp2_teardown() {
   return 0;
 }
 
+double x264_cp2_psnr( double sqe, double size ) {
+    double mse = sqe / (PIXEL_MAX*PIXEL_MAX * size);
+    if( mse <= 0.0000000001 ) /* Max 100dB */
+        return 100;
+
+    return -10.0 * log10( mse );
+}
+
 double x264_cp2_get_quality() {
-  return h->stat.f_psnr_average[h->sh.i_type] * 1000.0;
+  int64_t ssd[3] = {
+    h->stat.frame.i_ssd[0],
+    h->stat.frame.i_ssd[1],
+    h->stat.frame.i_ssd[2],
+  };
+  double psnr = x264_cp2_psnr( ssd[0] + ssd[1] + ssd[2], 3 * h->param.i_width * h->param.i_height / 2 );
+  return psnr * 1000.0;
 }
