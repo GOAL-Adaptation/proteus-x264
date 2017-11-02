@@ -1,5 +1,11 @@
 # proteus-x264
 
+## Install dependencies
+
+### macOS
+
+- `brew install nasm`
+
 ## Build
 
 `make cp2`
