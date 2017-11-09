@@ -96,6 +96,7 @@ int x264_cp2_setup() {
   param.rc.i_qp_constant = knobs.qp;
   param.rc.i_qp_min = knobs.qp;
   param.rc.i_qp_max = knobs.qp;
+  param.rc.i_lookahead = 0;
 
   /* Apply profile restrictions. */
   if( x264_param_apply_profile( &param, "high" ) < 0 )
