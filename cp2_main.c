@@ -95,6 +95,10 @@ int main( int argc, char **argv )
       fprintf(stderr, "[cp2] quality for frame %d: %f.\n", processed_frames, quality);
       double bitrate = x264_cp2_get_bitrate();
       fprintf(stderr, "[cp2] bitrate for frame %d: %f.\n", processed_frames, bitrate);
+      double inter = x264_cp2_get_8x8_inter();
+      fprintf(stderr, "[cp2] inter for frame %d: %f%%.\n", processed_frames, inter);
+      double intra = x264_cp2_get_8x8_intra();
+      fprintf(stderr, "[cp2] intra for frame %d: %f%%.\n", processed_frames, intra);
 
       processed_frames++;
     }

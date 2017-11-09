@@ -199,3 +199,17 @@ double x264_cp2_get_bitrate() {
 
   return total_frame_size / duration / 125;
 }
+
+double x264_cp2_get_8x8_inter() {
+  return 100. * h->stat.i_mb_count_8x8dct[1] / h->stat.i_mb_count_8x8dct[0];
+}
+
+double x264_cp2_get_8x8_intra() {
+  int64_t i_i8x8 = h->stat.i_mb_count[0][I_8x8] + h->stat.i_mb_count[1][I_8x8] + h->stat.i_mb_count[2][I_8x8];
+
+  int64_t i_intra = i_i8x8 +
+    h->stat.i_mb_count[0][I_4x4] + h->stat.i_mb_count[1][I_4x4] + h->stat.i_mb_count[2][I_4x4] +
+    h->stat.i_mb_count[0][I_16x16] + h->stat.i_mb_count[1][I_16x16] + h->stat.i_mb_count[2][I_16x16];
+
+  return 100. * i_i8x8 / i_intra;
+}

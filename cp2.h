@@ -55,6 +55,8 @@ void cp2_update_x264_param();
 
 double x264_cp2_get_quality();
 double x264_cp2_get_bitrate();
+double x264_cp2_get_8x8_inter();
+double x264_cp2_get_8x8_intra();
 
 // x264 encode functions
 
