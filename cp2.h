@@ -39,7 +39,7 @@
 extern "C" {
 #endif
 
-// cp2 knobs and measures
+// cp2 knobs
 
 typedef struct cp2_knobs {
   int me;
@@ -51,7 +51,10 @@ typedef struct cp2_knobs {
 void cp2_update_knob_settings(cp2_knobs initialKnobSettings);
 void cp2_update_x264_param();
 
+// cp2 meausre and features
+
 double x264_cp2_get_quality();
+double x264_cp2_get_bitrate();
 
 // x264 encode functions
 

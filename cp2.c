@@ -192,3 +192,10 @@ double x264_cp2_get_quality() {
   double psnr = x264_cp2_psnr( ssd[0] + ssd[1] + ssd[2], 3 * h->param.i_width * h->param.i_height / 2 );
   return psnr * 1000.0;
 }
+
+double x264_cp2_get_bitrate() {
+  double total_frame_size = h->stat.i_frame_size[0] + h->stat.i_frame_size[1] + h->stat.i_frame_size[2];
+  double duration = h->stat.f_frame_duration[0] + h->stat.f_frame_duration[1] + h->stat.f_frame_duration[2];
+
+  return total_frame_size / duration / 125;
+}

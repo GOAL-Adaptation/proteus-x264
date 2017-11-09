@@ -90,8 +90,13 @@ int main( int argc, char **argv )
       } else if (enc_ret < 0) {
         goto fail;
       }
+
+      double quality = x264_cp2_get_quality();
+      fprintf(stderr, "[cp2] quality for frame %d: %f.\n", processed_frames, quality);
+      double bitrate = x264_cp2_get_bitrate();
+      fprintf(stderr, "[cp2] bitrate for frame %d: %f.\n", processed_frames, bitrate);
+
       processed_frames++;
-      x264_cp2_get_quality();
     }
 
     return x264_cp2_teardown();
