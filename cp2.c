@@ -53,6 +53,9 @@ int i_frame = 0;
 FILE *fin;
 FILE *fout;
 
+double total_frame_size_to_previous_input = 0;
+double duration_to_previous_input = 0;
+
 void cp2_update_knob_settings(cp2_knobs knobs_settings) {
   knobs = knobs_settings;
   cp2_update_x264_param();
@@ -197,7 +200,12 @@ double x264_cp2_get_bitrate() {
   double total_frame_size = h->stat.i_frame_size[0] + h->stat.i_frame_size[1] + h->stat.i_frame_size[2];
   double duration = h->stat.f_frame_duration[0] + h->stat.f_frame_duration[1] + h->stat.f_frame_duration[2];
 
-  return total_frame_size / duration / 125;
+  double bitrate = (total_frame_size - total_frame_size_to_previous_input) / (duration - duration_to_previous_input) / 125;
+
+  total_frame_size_to_previous_input = total_frame_size;
+  duration_to_previous_input = duration;
+
+  return bitrate;
 }
 
 double x264_cp2_get_8x8_inter() {
