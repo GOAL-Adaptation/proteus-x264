@@ -93,6 +93,7 @@ int x264_cp2_setup() {
       return -1;
 
   /* Configure non-default params */
+  param.i_bframe = 0;
   param.i_width  = width;
   param.i_height = height;
   param.analyse.b_psnr = 1;
