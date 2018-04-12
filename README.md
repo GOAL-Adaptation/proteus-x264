@@ -13,6 +13,10 @@ Pre-built packages for `nasm` are available for RPM-based Linux distributions,
 otherwise, a local build and installation is needed.
 Detailed instructions can be found at `nasm` website.
 
+## Configure
+
+`./configure --enable-pic`
+
 ## Build
 
 `make cp2`
