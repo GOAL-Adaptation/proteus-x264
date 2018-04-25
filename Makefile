@@ -240,7 +240,7 @@ else
 endif
 
 config.mak:
-	./configure
+	./configure --enable-pic
 
 depend: .depend
 ifneq ($(wildcard .depend),)
