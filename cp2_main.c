@@ -69,7 +69,9 @@ int main( int argc, char **argv )
       .reframes = 1,
       .qp = 0
     };
-    x264_cp2_init(inPath, outPath, w, h, init_knobs);
+    if (x264_cp2_init(inPath, outPath, w, h, init_knobs) < 0) {
+      goto fail;
+    }
     if (x264_cp2_setup() < 0) {
       goto fail;
     }

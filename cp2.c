@@ -75,7 +75,7 @@ void cp2_update_x264_param() {
   }
 }
 
-void x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs knobSettings) {
+int x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs knobSettings) {
   input_path = inputPath;
   output_path = outputPath;
   width = wdth;
@@ -83,8 +83,25 @@ void x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int 
   knobs = knobSettings;
   knob_qp = knobSettings.qp;
 
-  fin = fopen(input_path, "rb");
-  fout = fopen(output_path, "wb");
+  if( !strcmp(input_path, "stdin") )
+    fin = stdin;
+  else
+    fin = fopen(input_path, "rb");
+  if( fin == NULL ) {
+    fprintf(stderr, "x264_cp2_init: Failed to open input file %s\n", input_path);
+    return -1;
+  }
+
+  if( !strcmp(output_path, "stdout") )
+    fout = stdout;
+  else
+    fout = fopen(output_path, "wb");
+  if( fout == NULL ) {
+    fprintf(stderr, "x264_cp2_init: Failed to open output file %s\n", output_path);
+    return -2;
+  }
+
+  return 0;
 }
 
 int x264_cp2_setup() {
@@ -101,6 +118,7 @@ int x264_cp2_setup() {
   param.rc.i_qp_min = knobs.qp;
   param.rc.i_qp_max = knobs.qp;
   param.rc.i_lookahead = 0;
+  param.i_log_level = 0;    // 0=error, 1=warning, 2=info, 3=debug
 
   /* Apply profile restrictions. */
   if( x264_param_apply_profile( &param, "high" ) < 0 )
@@ -171,8 +189,8 @@ int x264_cp2_teardown() {
       }
   }
 
-  fclose(fin);
-  fclose(fout);
+  if ( fin != stdin ) fclose(fin);
+  if ( fout != stdout ) fclose(fout);
   x264_encoder_close( h );
   x264_picture_clean( &pic );
 
