@@ -75,7 +75,9 @@ void cp2_update_x264_param() {
   }
 }
 
-int x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs knobSettings) {
+void x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs knobSettings) {
+  // FIXME: switch to this declaration when we add error checking
+  //int x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs knobSettings) {
   input_path = inputPath;
   output_path = outputPath;
   width = wdth;
@@ -87,21 +89,24 @@ int x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int h
     fin = stdin;
   else
     fin = fopen(input_path, "rb");
+  /* FIXME: add this for error checking
   if( fin == NULL ) {
     fprintf(stderr, "x264_cp2_init: Failed to open input file %s\n", input_path);
     return -1;
   }
-
+  */
   if( !strcmp(output_path, "stdout") )
     fout = stdout;
   else
     fout = fopen(output_path, "wb");
+  /* FIXME: add this for error checking
   if( fout == NULL ) {
     fprintf(stderr, "x264_cp2_init: Failed to open output file %s\n", output_path);
     return -2;
   }
 
   return 0;
+  */
 }
 
 int x264_cp2_setup() {

@@ -60,7 +60,9 @@ double x264_cp2_get_8x8_intra();
 
 // x264 encode functions
 
-int x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs knobSettings);
+void x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs knobSettings);
+  // FIXME: switch above line to version below when we add error checking
+  //int x264_cp2_init(const char *inputPath, const char *outputPath, int wdth, int hght, cp2_knobs knobSettings);
 int x264_cp2_setup();
 int x264_cp2_encode_frame();
 int x264_cp2_teardown();
