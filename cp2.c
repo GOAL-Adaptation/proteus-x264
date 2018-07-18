@@ -123,7 +123,8 @@ int x264_cp2_setup() {
   param.rc.i_qp_min = knobs.qp;
   param.rc.i_qp_max = knobs.qp;
   param.rc.i_lookahead = 0;
-  param.i_log_level = 0;    // 0=error, 1=warning, 2=info, 3=debug
+  //NOTE: log_level must be >=2 for Proteus (so PSNR is turned on)
+  param.i_log_level = 2;
 
   /* Apply profile restrictions. */
   if( x264_param_apply_profile( &param, "high" ) < 0 )
