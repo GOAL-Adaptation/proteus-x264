@@ -125,6 +125,18 @@ int x264_cp2_setup() {
   param.rc.i_lookahead = 0;
   //NOTE: log_level must be >=2 for Proteus (so PSNR is turned on)
   param.i_log_level = 2;
+  // Additional options that were used in Phase 1 (demo)
+  param.analyse.inter = X264_ANALYSE_I4x4 | X264_ANALYSE_BSUB16x16;
+  param.analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+  param.analyse.i_me_method = X264_ME_UMH;
+  param.i_threads = 4;
+  param.rc.i_vbv_max_bitrate = 3000;
+  param.rc.i_vbv_buffer_size = 400;
+  param.i_keyint_max = 30;
+  //Used in Phase 1 but default to correct value
+  param.analyse.b_weighted_bipred = 1;
+  param.analyse.b_mixed_references = 1;
+  param.analyse.b_fast_pskip = 0;
 
   /* Apply profile restrictions. */
   if( x264_param_apply_profile( &param, "high" ) < 0 )
